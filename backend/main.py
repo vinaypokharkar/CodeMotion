@@ -10,11 +10,30 @@ import ast
 from fastapi.responses import FileResponse, JSONResponse
 from llm_generate import generate_manim_code
 from validator import sanitize_and_validate
+import threading
+import time
+try:
+    from supabase import create_client
+except Exception:
+    create_client = None
 
 # Run with Docker (loads .env for GENAI_API_KEY, etc.)
 # docker run --env-file .env -p 8000:8000 your-fastapi-image
 
 app = FastAPI(title="Simple Manim Runner")
+
+# Supabase client initialization (optional)
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_BUCKET = os.getenv("SUPABASE_BUCKET", "videos")
+if SUPABASE_URL and SUPABASE_KEY and create_client is not None:
+    try:
+        _supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    except Exception as e:
+        print("Failed to initialize Supabase client:", e)
+        _supabase = None
+else:
+    _supabase = None
 
 class PromptIn(BaseModel):
     prompt: str
@@ -161,8 +180,43 @@ async def render_code(req: CodeRequest):
             # If copy fails, still attempt to return original from temp
             return FileResponse(mp4_path, media_type="video/mp4", filename=os.path.basename(mp4_path))
 
-        # return the saved copy from the same directory
-        return FileResponse(dest_path, media_type="video/mp4", filename=os.path.basename(dest_path))
+        # Attempt to upload the saved video to Supabase (if configured)
+        supabase_url = None
+        try:
+            if _supabase is not None:
+                # create a destination name inside the bucket
+                bucket = SUPABASE_BUCKET
+                dest_name = f"{uuid.uuid4().hex[:8]}-{os.path.basename(dest_path)}"
+                print(f"Uploading to Supabase bucket '{bucket}' with name '{dest_name}'")
+                
+                with open(dest_path, "rb") as f:
+                    # upload file-like object
+                    result = _supabase.storage.from_(bucket).upload(dest_name, f)
+                    print(f"Upload result: {result}")
+
+                # get public URL - this returns a string directly, not a dict
+                supabase_url = _supabase.storage.from_(bucket).get_public_url(dest_name)
+                print(f"Supabase public URL: {supabase_url}")
+                
+                if supabase_url:
+                    print(f"Uploaded video to Supabase: {supabase_url}")
+                else:
+                    print("Warning: Supabase returned empty URL")
+            else:
+                print("Supabase client not initialized. Check SUPABASE_URL and SUPABASE_KEY env vars")
+        except Exception as e:
+            # don't fail the request if upload fails; log and continue
+            print(f"Supabase upload failed: {type(e).__name__}: {e}")
+            import traceback
+            traceback.print_exc()
+
+        # return metadata JSON containing local file info and Supabase URL (if uploaded)
+        response = {
+            "filename": os.path.basename(dest_path),
+            "local_path": dest_path,
+            "supabase_url": supabase_url,
+        }
+        return JSONResponse(status_code=200, content=response)
     except subprocess.TimeoutExpired:
         raise HTTPException(status_code=504, detail="render timed out")
     finally:
@@ -171,3 +225,25 @@ async def render_code(req: CodeRequest):
             shutil.rmtree(tmp)
         except Exception:
             pass
+
+
+@app.get("/videos/{filename}")
+def download_video(filename: str):
+    """Serve a previously generated video file from `generated_videos/`."""
+    dest_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "generated_videos")
+    path = os.path.join(dest_dir, filename)
+    if not os.path.exists(path):
+        raise HTTPException(status_code=404, detail="File not found")
+    return FileResponse(path, media_type="video/mp4", filename=filename)
+
+
+@app.get("/debug/supabase")
+def debug_supabase():
+    """Debug endpoint to check Supabase configuration."""
+    return {
+        "supabase_url": SUPABASE_URL or "NOT SET",
+        "supabase_key": "***" if SUPABASE_KEY else "NOT SET",
+        "supabase_bucket": SUPABASE_BUCKET,
+        "client_initialized": _supabase is not None,
+        "create_client_available": create_client is not None,
+    }
