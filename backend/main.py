@@ -9,6 +9,7 @@ from pydantic import BaseModel
 import ast
 from fastapi.responses import FileResponse, JSONResponse
 from llm_generate import generate_manim_code
+from validator import sanitize_and_validate
 
 # Run with Docker (loads .env for GENAI_API_KEY, etc.)
 # docker run --env-file .env -p 8000:8000 your-fastapi-image
@@ -22,6 +23,14 @@ class GenerateResponse(BaseModel):
     path: str
     code: str
     metadata: dict
+
+class ValidationRequest(BaseModel):
+    code: str
+
+class ValidationResponse(BaseModel):
+    ok: bool
+    errors: list[str] | None = None
+    sanitized_code: str | None = None
 
 @app.post("/generate", response_model=GenerateResponse)
 def generate_endpoint(req: PromptIn) -> GenerateResponse:
@@ -72,6 +81,18 @@ class CodeRequest(BaseModel):
     code: str
     scene_class: str = "GeneratedScene"  # class name of the Scene to render
     quality: str = "low"             # low/medium/high (affects manim flags)
+
+
+@app.post("/validate", response_model=ValidationResponse)
+def validate_endpoint(req: ValidationRequest) -> ValidationResponse:
+    result = sanitize_and_validate(req.code)
+    if result.get("ok"):
+        return ValidationResponse(ok=True, sanitized_code=result.get("sanitized_code"))
+    return ValidationResponse(
+        ok=False,
+        errors=result.get("errors", []),
+        sanitized_code=result.get("sanitized_code"),
+    )
 
 
 

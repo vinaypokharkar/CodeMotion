@@ -38,7 +38,9 @@ RULES:
 5) No preview/gui calls (no xdg-open).
 6) After code block include one line: ///METADATA///{{"duration_seconds":<int>,"estimated_complexity":"low"|"medium"|"high"}}
 7) No extra text.
-Generate a compact System Architecture scene showing client, API, server, database, cloud, arrows, and a small dot moving along arrows once.
+Create any animations based on the user's prompt.
+NEVER use Checkmark, Check, Tick, or any icon class not built into Manim.
+If you need a checkmark, draw it manually using two Line() segments inside a VGroup.
 Prompt: {user_prompt}
 """
 
@@ -50,7 +52,7 @@ Prompt: {user_prompt}
 
     # Correct call: models.generate_content
     resp = client.models.generate_content(
-        model="gemini-2.5-flash",
+        model="gemini-2.5-pro",
         contents=prompt
     )
 
