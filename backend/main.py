@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routes import generation, validation, rendering
+from routes import generation, validation, rendering, protected
 import os
 
 app = FastAPI(title="Simple Manim Runner")
@@ -7,6 +7,8 @@ app = FastAPI(title="Simple Manim Runner")
 app.include_router(generation.router, prefix="/api")
 app.include_router(validation.router, prefix="/api")
 app.include_router(rendering.router, prefix="/api")
+app.include_router(protected.router, prefix="/api")
+
 
 @app.get("/debug/supabase")
 def debug_supabase():
@@ -27,3 +29,8 @@ def debug_supabase():
         "supabase_bucket": SUPABASE_BUCKET,
         "client_initialized": client_initialized,
     }
+
+
+@app.get("/")
+async def root():
+    return {"msg": "ok"}
