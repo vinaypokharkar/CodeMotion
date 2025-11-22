@@ -437,19 +437,6 @@ http://localhost:8008
 - Check Manim Docker image is built
 - Verify Docker has necessary permissions
 
-## 📝 License
-
-[Add your license here]
-
-## 🤝 Contributing
-
-[Add contribution guidelines here]
-
-## 📧 Contact
-
-[Add contact information here]
-
----
 
 Built with ❤️ using Next.js, FastAPI, Manim, and Supabase
 
