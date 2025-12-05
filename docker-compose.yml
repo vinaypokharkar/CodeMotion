@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.api
+    ports:
+      - "8008:8008"
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - SERVICE_ROLE_KEY=${SERVICE_ROLE_KEY}
+      - GENAI_API_KEY=${GENAI_API_KEY}
+      - SUPABASE_BUCKET=${SUPABASE_BUCKET:-videos}
+      - SUPABASE_JWT_SECRET=${SUPABASE_JWT_SECRET:-}
+      - SUPABASE_AUD=${SUPABASE_AUD:-}
+    volumes:
+      - ./backend/generated_videos:/app/generated_videos
+      - ./backend/generated_scripts:/app/generated_scripts
+      - /var/run/docker.sock:/var/run/docker.sock  # For Docker-in-Docker
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8008/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8008}
+    depends_on:
+      - backend
+    restart: unless-stopped
+

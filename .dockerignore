@@ -1,0 +1,45 @@
+# Git
+.git
+.gitignore
+
+# Environment files
+.env
+.env.local
+.env*.local
+
+# Dependencies
+node_modules
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+
+# Build outputs
+.next
+dist
+build
+*.egg-info
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs
+
+# Generated files (keep structure but ignore content)
+generated_videos/*
+!generated_videos/.gitkeep
+generated_scripts/*
+!generated_scripts/.gitkeep
+
