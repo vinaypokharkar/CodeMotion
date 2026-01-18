@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { LoginCard } from "@/components/auth/LoginCard";
 
 const Navbar = () => {
   return (
@@ -44,17 +42,9 @@ const Navbar = () => {
 
         {/* Auth Buttons */}
         <div className="flex items-center gap-4">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="ghost" size="sm">
-                Log in
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="border-none bg-transparent p-0 shadow-none sm:max-w-[400px]">
-              <LoginCard />
-            </DialogContent>
-          </Dialog>
-
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/login">Log in</Link>
+          </Button>
           <Button size="sm" asChild>
             <Link href="/signup">Sign up</Link>
           </Button>
