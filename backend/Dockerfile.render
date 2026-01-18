@@ -47,4 +47,4 @@ ENV PYTHONUNBUFFERED=1
 # 7. Expose port (Render sets PORT env, uvicorn needs to listen on it)
 # We use a start script or just command to handle PORT dynamically if needed, 
 # but uvicorn can be passed $PORT.
-CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}
