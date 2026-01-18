@@ -219,6 +219,8 @@ def retry_render(code: str, filename: str, scene_class: str, quality: str, max_r
                 f.write(current_code)
 
             quality_flag = {"low": "-ql", "medium": "-pqm", "high": "-pqh"}.get(quality, "-ql")
+            out_name = "render"
+
             # Decide whether to use Docker or Native Manim
             use_native = os.getenv("USE_NATIVE_MANIM", "false").lower() == "true"
             
