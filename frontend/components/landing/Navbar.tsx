@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Sparkles, LogOut, User } from "lucide-react";
+import { Sparkles, LogOut, User, LayoutDashboard } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import {
   Popover,
@@ -31,11 +32,15 @@ const Navbar = () => {
         {/* Logo */}
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Sparkles className="h-5 w-5" />
-            </div>
+            <Image
+              src="/CodeMotion-logo.png"
+              alt="Logo"
+              width={32}
+              height={32}
+              className="h-8 w-8 object-contain"
+            />
             <span className="text-xl font-bold tracking-tight text-foreground">
-              Animind
+              CodeMotion
             </span>
           </Link>
         </div>
@@ -74,7 +79,6 @@ const Navbar = () => {
                   variant="ghost"
                   className="relative h-10 w-auto rounded-full bg-muted/60 pl-2 pr-1 hover:bg-muted font-normal focus:ring-2 focus:ring-primary focus:ring-offset-1 flex items-center gap-2"
                 >
-                  
                   <Avatar className="h-8 w-8 border border-border/50">
                     <AvatarImage
                       src={user.metadata?.avatar_url}
@@ -84,7 +88,6 @@ const Navbar = () => {
                       {getInitials(user.metadata?.full_name || user.email)}
                     </AvatarFallback>
                   </Avatar>
-                  
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-56" align="end" forceMount>
@@ -96,6 +99,17 @@ const Navbar = () => {
                     {user.email}
                   </p>
                 </div>
+                <div className="my-2 h-px bg-muted" />
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start h-8 px-2"
+                  asChild
+                >
+                  <Link href="/dashboard">
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    Dashboard
+                  </Link>
+                </Button>
                 <div className="my-2 h-px bg-muted" />
                 <Button
                   variant="ghost"

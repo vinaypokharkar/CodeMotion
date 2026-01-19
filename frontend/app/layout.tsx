@@ -8,8 +8,11 @@ const instrumentSans = Instrument_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Animind - AI Animation Generator",
+  title: "CodeMotion - AI Animation Generator",
   description: "Create Manim animations with natural language",
+  icons: {
+    icon: "/CodeMotion-logo.svg",
+  },
 };
 
 export default function RootLayout({

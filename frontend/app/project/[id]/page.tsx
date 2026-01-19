@@ -211,13 +211,15 @@ export default function ProjectPage() {
                       : "bg-primary text-primary-foreground rounded-tr-none"
                   }`}
                 >
-                  {msg.content}
+                  {(() => {
+                    // Helper to hide code from message
+                    const clean = msg.content
+                      .replace(/Code used:[\s\S]*/, "")
+                      .replace(/I tried running:[\s\S]*/, "")
+                      .trim();
+                    return clean || msg.content; // Fallback if empty (shouldn't happen usually)
+                  })()}
                 </div>
-                {msg.role === "assistant" && msg.sanitized_code && (
-                  <div className="text-xs text-muted-foreground flex items-center gap-1 ml-1 cursor-pointer hover:text-foreground">
-                    <Code className="h-3 w-3" /> Code generated
-                  </div>
-                )}
               </div>
             ))}
 

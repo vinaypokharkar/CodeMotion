@@ -105,7 +105,7 @@ async def check_user_active(user_id: str):
     supabase = get_supabase_client()
     try:
         # Use single() to expected exactly one row
-        res = supabase.table("profiles").select("is_active").eq("id", user_id).single()
+        res = supabase.table("profiles").select("is_active").eq("id", user_id).single().execute()
         if res.data and not res.data.get("is_active", True):
             return False
         return True

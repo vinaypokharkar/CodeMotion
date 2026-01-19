@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Image from "next/image";
 import { Github, Sparkles, Loader2 } from "lucide-react";
 
 export default function SignupPage() {
@@ -79,8 +80,14 @@ export default function SignupPage() {
 
       <div className="relative z-10 hidden h-full flex-col p-10 text-white lg:flex dark:border-r">
         <div className="relative z-20 flex items-center text-lg font-medium">
-          <Sparkles className="mr-2 h-6 w-6" />
-          Animind
+          <Image
+            src="/CodeMotion-logo.png"
+            alt="Logo"
+            width={24}
+            height={24}
+            className="mr-2 h-6 w-6 object-contain"
+          />
+          CodeMotion
         </div>
       </div>
 

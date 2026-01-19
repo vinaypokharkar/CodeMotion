@@ -60,7 +60,7 @@ class ChatBase(BaseModel):
 class ChatOut(ChatBase):
     id: str
     created_at: str
-    updated_at: str
+    updated_at: Optional[str] = None
 
 class MessageBase(BaseModel):
     role: str
