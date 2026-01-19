@@ -75,9 +75,8 @@ async def google_login():
         # Get the current URL for redirection (assuming localhost for dev)
         # In production, this should be your frontend URL
         # We can read this from env if needed
-        import os
-        frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
-        redirect_url = f"{frontend_url}/auth/callback"
+   
+        redirect_url = "https://code-motion-indol.vercel.app/auth/callback"
         
         data = supabase.auth.sign_in_with_oauth({
             "provider": "google",
