@@ -62,8 +62,11 @@ export default function SignupPage() {
 
   const handleGoogleLogin = async () => {
     try {
+      const redirectUrl = encodeURIComponent(
+        `${window.location.origin}/auth/callback`,
+      );
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_SERVER_URL}/api/auth/google`,
+        `${process.env.NEXT_PUBLIC_BACKEND_SERVER_URL}/api/auth/google?redirect_to=${redirectUrl}`,
       );
       const data = await res.json();
       if (data.url) {

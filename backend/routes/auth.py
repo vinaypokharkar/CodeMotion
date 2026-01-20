@@ -65,7 +65,7 @@ async def login(user: UserLogin):
          raise HTTPException(status_code=400, detail=str(e))
 
 @router.get("/google")
-async def google_login():
+async def google_login(redirect_to: str = None):
     """
     Returns the URL to start the Google OAuth flow.
     The frontend should redirect the user to this URL.
@@ -77,8 +77,11 @@ async def google_login():
         # We can read this from env if needed
    
         import os
-        frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
-        redirect_url = f"{frontend_url}/auth/callback"
+        if not redirect_to:
+            frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
+            redirect_url = f"{frontend_url}/auth/callback"
+        else:
+            redirect_url = redirect_to
         
         data = supabase.auth.sign_in_with_oauth({
             "provider": "google",

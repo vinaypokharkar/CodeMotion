@@ -76,7 +76,7 @@ export function RecentProjects() {
   if (!loading && projects.length === 0) return null;
 
   return (
-    <section className="w-full max-w-5xl mx-auto px-4 mt-8 mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <section className="w-full max-w-5xl mx-auto px-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="rounded-2xl bg-[#0F0F10] border border-white/5 shadow-2xl overflow-hidden">
         {/* Header Bar */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
