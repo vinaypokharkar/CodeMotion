@@ -1,6 +1,6 @@
-# Animind - AI-Powered Manim Animation Generator
+# CodeMotion - AI-Powered Manim Animation Generator
 
-Animind is a full-stack web application that allows users to create mathematical animations and data visualizations using natural language. Simply describe what you want to see, and Animind generates Manim Python code, renders it into high-quality videos, and displays them in an interactive interface.
+CodeMotion is a full-stack web application that allows users to create mathematical animations and data visualizations using natural language. Simply describe what you want to see, and CodeMotion generates Manim Python code, renders it into high-quality videos, and displays them in an interactive interface.
 
 ## 🎯 Features
 
@@ -507,7 +507,7 @@ Vercel is the recommended platform for Next.js applications:
 3. **Use PM2 for process management**:
    ```bash
    npm install -g pm2
-   pm2 start npm --name "animind-frontend" -- start
+   pm2 start npm --name "CodeMotion-frontend" -- start
    pm2 save
    pm2 startup
    ```
@@ -565,7 +565,7 @@ Railway supports Docker and is great for FastAPI apps:
    ```yaml
    services:
      - type: web
-       name: animind-backend
+       name: CodeMotion-backend
        env: python
        buildCommand: pip install -r requirements.txt
        startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
@@ -612,10 +612,10 @@ Railway supports Docker and is great for FastAPI apps:
    gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8008
    ```
 
-5. **Set up systemd service** (`/etc/systemd/system/animind-backend.service`):
+5. **Set up systemd service** (`/etc/systemd/system/CodeMotion-backend.service`):
    ```ini
    [Unit]
-   Description=Animind Backend
+   Description=CodeMotion Backend
    After=network.target
 
    [Service]
@@ -630,8 +630,8 @@ Railway supports Docker and is great for FastAPI apps:
 
 6. **Start service**:
    ```bash
-   sudo systemctl start animind-backend
-   sudo systemctl enable animind-backend
+   sudo systemctl start CodeMotion-backend
+   sudo systemctl enable CodeMotion-backend
    ```
 
 7. **Nginx configuration**:
